@@ -143,4 +143,8 @@ dist
 
 # End of https://www.toptal.com/developers/gitignore/api/node
 
+# .DS_Store on mac
+.DS_Store
+
+# Public assets directory
 public/
