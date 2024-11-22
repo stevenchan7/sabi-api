@@ -1,6 +1,6 @@
 import User from '../models/user.model';
 
-export const isUserExist = async (email: string, nim: string): Promise<boolean> => {
+export const isUserExist = async (email: string): Promise<boolean> => {
   try {
     const users = await User.findAll({
       where: {
@@ -14,6 +14,6 @@ export const isUserExist = async (email: string, nim: string): Promise<boolean> 
 
     return false;
   } catch (error) {
-    throw new Error('Terjadi kesalahan. Silahkan coba lagi.');
+    throw new Error('Gagal mengecek user.');
   }
 };

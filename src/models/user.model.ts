@@ -33,9 +33,9 @@ User.init(
       allowNull: false,
     },
     role: {
-      type: DataTypes.ENUM('admin', 'voter'),
+      type: DataTypes.ENUM('admin', 'student'),
       allowNull: false,
-      defaultValue: 'voter',
+      defaultValue: 'student',
     },
     points: {
       type: DataTypes.INTEGER,

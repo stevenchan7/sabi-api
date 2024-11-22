@@ -6,6 +6,7 @@ import cors from 'cors';
 import corsOptions from './config/cors.config';
 import { connectSequelize, syncModel } from './helpers/sequelize.helper';
 import CustomError from './helpers/error.helper';
+import authRouter from './routes/auth.route';
 const app = express();
 
 app.use(cookieSession(cookieOptions));
@@ -16,6 +17,7 @@ app.use(express.urlencoded());
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
+app.use('/api/auth/', authRouter);
 
 // Error handler
 app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
