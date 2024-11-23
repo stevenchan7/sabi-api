@@ -1,5 +1,6 @@
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes, HasManyGetAssociationsMixin } from 'sequelize';
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes, HasManyGetAssociationsMixin, HasManyCreateAssociationMixin } from 'sequelize';
 import sequelize from '../config/sequelize.config';
+import Question from './question.model';
 
 class Group extends Model<InferAttributes<Group>, InferCreationAttributes<Group>> {
   declare id: number;
@@ -7,6 +8,8 @@ class Group extends Model<InferAttributes<Group>, InferCreationAttributes<Group>
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date>;
+  declare getQuestions: HasManyGetAssociationsMixin<Question>;
+  declare createQuestion: HasManyCreateAssociationMixin<Question, 'groupId'>;
 }
 
 Group.init(

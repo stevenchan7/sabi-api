@@ -28,7 +28,10 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       status: 'success',
       message: 'Berhasil menambah user.',
       data: {
-        user: newUser,
+        user: {
+          fullname,
+          email,
+        },
       },
     });
   } catch (error) {

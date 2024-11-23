@@ -7,6 +7,8 @@ import corsOptions from './config/cors.config';
 import { connectSequelize, syncModel } from './helpers/sequelize.helper';
 import CustomError from './helpers/error.helper';
 import authRouter from './routes/auth.route';
+import groupRouter from './routes/group.route';
+import questionRouter from './routes/question.route';
 const app = express();
 
 app.use(cookieSession(cookieOptions));
@@ -18,6 +20,8 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
 app.use('/api/auth/', authRouter);
+app.use('/api/groups/', groupRouter);
+app.use('/api/questions/', questionRouter);
 
 // Error handler
 app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
