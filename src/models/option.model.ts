@@ -15,6 +15,7 @@ Option.init(
   {
     id: {
       type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
@@ -30,7 +31,7 @@ Option.init(
     updatedAt: DataTypes.DATE,
     deletedAt: DataTypes.DATE,
   },
-  { modelName: 'Option', sequelize, underscored: true, paranoid: true }
+  { modelName: 'Option', sequelize, underscored: true }
 );
 
 export default Option;

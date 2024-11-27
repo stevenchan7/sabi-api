@@ -29,7 +29,7 @@ Article.init(
     updatedAt: DataTypes.DATE,
     deletedAt: DataTypes.DATE,
   },
-  { modelName: 'Article', sequelize, underscored: true, paranoid: true }
+  { modelName: 'Article', sequelize, underscored: true }
 );
 
 export default Article;

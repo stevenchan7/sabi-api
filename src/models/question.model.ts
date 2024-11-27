@@ -11,12 +11,14 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date>;
   declare createOption: HasManyCreateAssociationMixin<Option, 'questionId'>;
+  declare getOptions: HasManyGetAssociationsMixin<Option>;
 }
 
 Question.init(
   {
     id: {
       type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
@@ -28,7 +30,11 @@ Question.init(
     updatedAt: DataTypes.DATE,
     deletedAt: DataTypes.DATE,
   },
-  { modelName: 'Question', sequelize, underscored: true, paranoid: true }
+  {
+    modelName: 'Question',
+    sequelize,
+    underscored: true,
+  }
 );
 
 export default Question;

@@ -27,7 +27,7 @@ Group.init(
     updatedAt: DataTypes.DATE,
     deletedAt: DataTypes.DATE,
   },
-  { modelName: 'Group', sequelize, underscored: true, paranoid: true }
+  { modelName: 'Group', sequelize, underscored: true }
 );
 
 export default Group;

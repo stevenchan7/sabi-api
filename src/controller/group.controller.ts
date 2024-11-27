@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import Group from '../models/group.model';
 import CustomError from '../helpers/error.helper';
+import sequelize from '../config/sequelize.config';
+import Option from '../models/option.model';
 
 export const getGroups = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -37,6 +39,40 @@ export const getGroupById = async (req: Request, res: Response, next: NextFuncti
       message: `Berhasil mendapat group dengan id ${id}.`,
       data: {
         group,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getQuizes = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  const { limit } = req.query;
+
+  try {
+    const group = await Group.findByPk(id);
+
+    if (!group) {
+      throw new CustomError(`Gagal mendapat group dengan id ${id}`, 404);
+    }
+
+    const quizes = await group.getQuestions({
+      attributes: ['id', 'question'],
+      order: sequelize.random(),
+      ...(limit && { limit: Number(limit) }),
+      include: {
+        model: Option,
+        as: 'options',
+        attributes: ['id', 'option'],
+      },
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: `Berhasil mendapat kuis group dengan id ${id}`,
+      data: {
+        quizes: quizes,
       },
     });
   } catch (error) {

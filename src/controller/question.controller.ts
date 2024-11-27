@@ -3,6 +3,7 @@ import Group from '../models/group.model';
 import CustomError from '../helpers/error.helper';
 import sequelize from '../config/sequelize.config';
 import Question from '../models/question.model';
+import Option from '../models/option.model';
 
 interface quiz {
   question: string;
@@ -15,7 +16,7 @@ export const getQuestionById = async (req: Request, res: Response, next: NextFun
 
   try {
     const question = await Question.findByPk(id, {
-      attributes: ['question'],
+      attributes: ['id', 'question'],
     });
 
     if (!question) {
@@ -28,33 +29,6 @@ export const getQuestionById = async (req: Request, res: Response, next: NextFun
       data: {
         question,
       },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const getQuestionsByGroupId = async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  const { limit } = req.query;
-
-  try {
-    const group = await Group.findByPk(id);
-
-    if (!group) {
-      throw new CustomError(`Gagal mendapat group dengan id ${id}`, 404);
-    }
-
-    const questions = await group.getQuestions({
-      attributes: ['question'],
-      limit: Number(limit),
-      order: sequelize.random(),
-    });
-
-    res.status(200).json({
-      status: 'success',
-      message: `Berhasil mendapat pertanyaan group dengan id ${id}`,
-      data: questions,
     });
   } catch (error) {
     next(error);
