@@ -10,7 +10,7 @@ export const getGroups = async (req: Request, res: Response, next: NextFunction)
 
     res.status(200).json({
       status: 'success',
-      message: 'Berhasil mendapat group.',
+      message: 'Berhasil mendapat groups.',
       data: {
         groups,
       },

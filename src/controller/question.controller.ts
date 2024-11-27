@@ -4,6 +4,12 @@ import CustomError from '../helpers/error.helper';
 import sequelize from '../config/sequelize.config';
 import Question from '../models/question.model';
 
+interface quiz {
+  question: string;
+  options: string[];
+  answer: number;
+}
+
 export const getQuestionById = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
 
@@ -55,8 +61,8 @@ export const getQuestionsByGroupId = async (req: Request, res: Response, next: N
   }
 };
 
-export const createQuestion = async (req: Request, res: Response, next: NextFunction) => {
-  const { question, groupId } = req.body;
+export const createQuestions = async (req: Request, res: Response, next: NextFunction) => {
+  const { quizes, groupId }: { quizes: quiz[]; groupId: number } = req.body;
 
   try {
     const group = await Group.findByPk(groupId);
@@ -65,15 +71,35 @@ export const createQuestion = async (req: Request, res: Response, next: NextFunc
       throw new CustomError(`Gagal mendapat group dengan id ${groupId}`, 404);
     }
 
-    const newQuestion = await group.createQuestion({
-      question,
-    });
+    const newQuizes = await Promise.all(
+      quizes.map(async (quiz) => {
+        const newQuestion = await group.createQuestion({
+          question: quiz.question,
+        });
+
+        const newOptions = await Promise.all(
+          quiz.options.map(async (option, index) => {
+            const newOption = await newQuestion.createOption({
+              option,
+              isAnswer: quiz.answer === index,
+            });
+
+            return newOption;
+          })
+        );
+
+        return {
+          question: newQuestion,
+          options: newOptions,
+        };
+      })
+    );
 
     res.status(201).json({
       status: 'success',
-      message: 'Berhasil menambah pertanyaan baru.',
+      message: `Berhasil menambah pertanyaan baru untuk quiz group dengan id ${groupId}.`,
       data: {
-        question: newQuestion,
+        quizes: newQuizes,
       },
     });
   } catch (error) {

@@ -11,8 +11,8 @@ const associate = () => {
   Group.hasMany(Question, { foreignKey: 'group_id' });
   Question.belongsTo(Group, { foreignKey: 'group_id' });
 
-  Question.hasMany(Option, { foreignKey: 'question_id' });
-  Option.belongsTo(Question, { foreignKey: 'question_id' });
+  Question.hasMany(Option, { foreignKey: 'question_id', onDelete: 'CASCADE' });
+  Option.belongsTo(Question, { foreignKey: 'question_id', onDelete: 'CASCADE' });
 
   User.hasMany(UserAnswerGroup, { foreignKey: 'user_id' });
   UserAnswerGroup.belongsTo(User, { foreignKey: 'user_id' });
