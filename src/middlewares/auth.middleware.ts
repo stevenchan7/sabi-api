@@ -5,7 +5,8 @@ import { JWT_SECRET_KEY } from '../helpers/constant.helper';
 
 export const authenticateStudent = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.session.token;
+    const bearer = req.headers.authorization;
+    const token = bearer.split(' ')[1];
 
     if (!token) {
       throw new CustomError('Tidak ada token!', 401);
@@ -27,7 +28,8 @@ export const authenticateStudent = async (req: Request, res: Response, next: Nex
 
 export const authenticateAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.session.token;
+    const bearer = req.headers.authorization;
+    const token = bearer.split(' ')[1];
 
     if (!token) {
       throw new CustomError('Tidak ada token!', 401);
