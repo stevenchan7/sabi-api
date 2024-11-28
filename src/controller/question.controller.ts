@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import Group from '../models/group.model';
 import CustomError from '../helpers/error.helper';
-import sequelize from '../config/sequelize.config';
 import Question from '../models/question.model';
 import Option from '../models/option.model';
 
@@ -28,6 +27,39 @@ export const getQuestionById = async (req: Request, res: Response, next: NextFun
       message: `Berhasil mendapat pertanyaan dengan id ${id}`,
       data: {
         question,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getQuestionsByGroupId = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  const { limit } = req.query;
+
+  try {
+    const group = await Group.findByPk(id);
+
+    if (!group) {
+      throw new CustomError(`Gagal mendapat group dengan id ${id}`, 404);
+    }
+
+    const quizes = await group.getQuestions({
+      attributes: ['id', 'question'],
+      ...(limit && { limit: Number(limit) }),
+      include: {
+        model: Option,
+        as: 'options',
+        attributes: ['id', 'option'],
+      },
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: `Berhasil mendapat kuis group dengan id ${id}`,
+      data: {
+        quizes: quizes,
       },
     });
   } catch (error) {

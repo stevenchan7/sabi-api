@@ -1,5 +1,6 @@
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes, HasManyGetAssociationsMixin } from 'sequelize';
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes, HasManyGetAssociationsMixin, HasManyCreateAssociationMixin } from 'sequelize';
 import sequelize from '../config/sequelize.config';
+import UserAnswerGroup from './userAnswerGroup.model';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: number;
@@ -11,6 +12,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date>;
+  declare createUserAnswerGroup: HasManyCreateAssociationMixin<UserAnswerGroup, 'userId'>;
 }
 
 User.init(

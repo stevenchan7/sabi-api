@@ -17,11 +17,11 @@ const associate = () => {
   User.hasMany(UserAnswerGroup, { foreignKey: 'user_id' });
   UserAnswerGroup.belongsTo(User, { foreignKey: 'user_id' });
 
-  UserAnswerGroup.hasMany(UserAnswer, { foreignKey: 'user_answer_group_id' });
-  UserAnswer.belongsTo(UserAnswerGroup, { foreignKey: 'user_answer_group_id' });
+  UserAnswerGroup.hasMany(UserAnswer, { foreignKey: 'user_answer_group_id', as: 'userAnswers' });
+  UserAnswer.belongsTo(UserAnswerGroup, { foreignKey: 'user_answer_group_id', as: 'userAnswerGroup' });
 
-  Question.hasMany(UserAnswer, { foreignKey: 'question_id' });
-  UserAnswer.belongsTo(Question, { foreignKey: 'question_id' });
+  Question.hasMany(UserAnswer, { foreignKey: 'question_id', as: 'userAnswers' });
+  UserAnswer.belongsTo(Question, { foreignKey: 'question_id', as: 'question' });
 
   Option.hasMany(UserAnswer, { foreignKey: 'option_id' });
   UserAnswer.belongsTo(UserAnswer, { foreignKey: 'option_id' });

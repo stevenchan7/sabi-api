@@ -1,4 +1,4 @@
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes, HasManyGetAssociationsMixin, ForeignKey } from 'sequelize';
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes, HasManyGetAssociationsMixin, ForeignKey, NonAttribute } from 'sequelize';
 import sequelize from '../config/sequelize.config';
 import Question from './question.model';
 import Option from './option.model';
@@ -13,6 +13,7 @@ class UserAnswer extends Model<InferAttributes<UserAnswer>, InferCreationAttribu
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date>;
+  declare question: NonAttribute<Question>;
 }
 
 UserAnswer.init(
@@ -24,7 +25,21 @@ UserAnswer.init(
     },
     isCorrect: {
       type: DataTypes.BOOLEAN,
+    },
+    questionId: {
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
+      references: {
+        model: Question,
+        key: 'id',
+      },
+    },
+    optionId: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      references: {
+        model: Option,
+        key: 'id',
+      },
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
