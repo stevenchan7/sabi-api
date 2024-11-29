@@ -5,6 +5,7 @@ class Article extends Model<InferAttributes<Article>, InferCreationAttributes<Ar
   declare id: number;
   declare title: string;
   declare content: string;
+  declare thumbnailUrl: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date>;
@@ -24,6 +25,9 @@ Article.init(
     content: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    thumbnailUrl: {
+      type: DataTypes.STRING,
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,

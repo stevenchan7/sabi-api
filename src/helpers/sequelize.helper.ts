@@ -40,7 +40,7 @@ export const connectSequelize = async () => {
 export const syncModel = async () => {
   try {
     associate();
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ force: true });
     console.log('Models have been sync successfully.');
   } catch (error) {
     console.error('Unable to sync models:', error);
