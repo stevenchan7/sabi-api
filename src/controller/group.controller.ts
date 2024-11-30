@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import Group from '../models/group.model';
 import CustomError from '../helpers/error.helper';
+import { gcsUpload } from '../helpers/gcs.helper';
+import path from 'path';
+import { bucket } from '../config/gcs.config';
 
 export const getGroups = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,10 +48,18 @@ export const getGroupById = async (req: Request, res: Response, next: NextFuncti
 };
 
 export const createGroup = async (req: Request, res: Response, next: NextFunction) => {
-  const { title } = req.body;
+  const { title, description } = req.body;
+  const file = req.file;
+
   try {
+    await gcsUpload('thumbnail', file);
+
+    const thumbnailUrl = `https://storage.googleapis.com/${bucket.name}/${file.filename}`;
+
     const newGroup = await Group.create({
       title,
+      description,
+      thumbnailUrl,
     });
 
     res.status(201).json({
