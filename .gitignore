@@ -148,3 +148,5 @@ dist
 
 # Public assets directory
 public/
+
+gcs-key.json

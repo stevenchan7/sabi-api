@@ -10,3 +10,5 @@ export const DB_USER = process.env.DB_USER;
 export const DB_PASSWORD = process.env.DB_PASSWORD;
 export const DB_HOST = process.env.DB_HOST;
 export const SERVER_HOST = process.env.SERVER_HOST || 'http://localhost/';
+export const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID;
+export const GCS_KEY_FILENAME = process.env.GCS_KEY_FILEPATH;
