@@ -3,9 +3,10 @@ import Group from '../models/group.model';
 import CustomError from '../helpers/error.helper';
 import Question from '../models/question.model';
 import Option from '../models/option.model';
+import { gcsUpload } from '../helpers/gcs.helper';
+import { bucket } from '../config/gcs.config';
 
-interface quiz {
-  question: string;
+interface Quiz {
   options: string[];
   answer: number;
 }
@@ -67,8 +68,10 @@ export const getQuestionsByGroupId = async (req: Request, res: Response, next: N
   }
 };
 
-export const createQuestions = async (req: Request, res: Response, next: NextFunction) => {
-  const { quizes, groupId }: { quizes: quiz[]; groupId: number } = req.body;
+export const createQuestion = async (req: Request, res: Response, next: NextFunction) => {
+  const { options, answer, groupId }: { options: string[]; answer: string; groupId: number } = req.body;
+  const file = req.file;
+  const folder = 'quiz-questions';
 
   try {
     const group = await Group.findByPk(groupId);
@@ -77,27 +80,24 @@ export const createQuestions = async (req: Request, res: Response, next: NextFun
       throw new CustomError(`Gagal mendapat group dengan id ${groupId}`, 404);
     }
 
-    const newQuizes = await Promise.all(
-      quizes.map(async (quiz) => {
-        const newQuestion = await group.createQuestion({
-          question: quiz.question,
+    // Upload question image to bucket
+    await gcsUpload(folder, file);
+
+    // Get URL
+    const question = `https://storage.googleapis.com/${bucket.name}/${folder}/${file.filename}`;
+
+    const newQuestion = await group.createQuestion({
+      question,
+    });
+
+    const newOptions = await Promise.all(
+      options.map(async (option, index) => {
+        const newOption = await newQuestion.createOption({
+          option,
+          isAnswer: Number(answer) === index,
         });
 
-        const newOptions = await Promise.all(
-          quiz.options.map(async (option, index) => {
-            const newOption = await newQuestion.createOption({
-              option,
-              isAnswer: quiz.answer === index,
-            });
-
-            return newOption;
-          })
-        );
-
-        return {
-          question: newQuestion,
-          options: newOptions,
-        };
+        return newOption;
       })
     );
 
@@ -105,7 +105,10 @@ export const createQuestions = async (req: Request, res: Response, next: NextFun
       status: 'success',
       message: `Berhasil menambah pertanyaan baru untuk quiz group dengan id ${groupId}.`,
       data: {
-        quizes: newQuizes,
+        quiz: {
+          question: newQuestion,
+          options: newOptions,
+        },
       },
     });
   } catch (error) {

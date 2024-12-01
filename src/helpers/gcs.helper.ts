@@ -5,7 +5,7 @@ export const gcsUpload = async (folder: string, file: Express.Multer.File) => {
     console.log(file.filename);
 
     const results = await bucket.upload(file.path, {
-      destination: file.filename,
+      destination: `${folder}/${file.filename}`,
       metadata: {
         contentType: file.mimetype,
       },
