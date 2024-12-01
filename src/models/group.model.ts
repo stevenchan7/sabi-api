@@ -7,6 +7,7 @@ class Group extends Model<InferAttributes<Group>, InferCreationAttributes<Group>
   declare title: string;
   declare description: string;
   declare thumbnailUrl: string;
+  declare totalQuestion: number;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date>;
@@ -31,6 +32,11 @@ Group.init(
     },
     thumbnailUrl: {
       type: DataTypes.STRING,
+    },
+    totalQuestion: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,

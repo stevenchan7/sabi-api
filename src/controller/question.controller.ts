@@ -11,6 +11,14 @@ interface Quiz {
   answer: number;
 }
 
+export const getQuestions = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await Question.findAll();
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getQuestionById = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
 
@@ -86,10 +94,13 @@ export const createQuestion = async (req: Request, res: Response, next: NextFunc
     // Get URL
     const question = `https://storage.googleapis.com/${bucket.name}/${folder}/${file.filename}`;
 
+    // This should be wrap inside a transaction
+    // Add question
     const newQuestion = await group.createQuestion({
       question,
     });
 
+    // Add question's options
     const newOptions = await Promise.all(
       options.map(async (option, index) => {
         const newOption = await newQuestion.createOption({
@@ -100,6 +111,9 @@ export const createQuestion = async (req: Request, res: Response, next: NextFunc
         return newOption;
       })
     );
+
+    // Increment group question_total col
+    await group.increment('totalQuestion');
 
     res.status(201).json({
       status: 'success',

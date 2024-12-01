@@ -8,7 +8,7 @@ import { upload } from '../config/multer.config';
 
 const router = Router();
 
-router.get('/', getGroups);
+router.get('/', authenticateAdmin, getGroups);
 router.get('/:id/quizes', authenticateAdmin, getQuestionsByGroupId);
 router.get('/:id', getGroupById);
 router.post('/', authenticateAdmin, upload.single('thumbnail'), createGroupValidationRules, validate, createGroup);
