@@ -12,7 +12,7 @@ router.get('/', authenticateAdmin, getGroups);
 router.get('/:id/quizes', authenticateAdmin, getQuestionsByGroupId);
 router.get('/:id', getGroupById);
 router.post('/', authenticateAdmin, upload.single('thumbnail'), createGroupValidationRules, validate, createGroup);
-router.put('/:id', authenticateAdmin, editGroupValidationRules, validate, editGroup);
+router.put('/:id', authenticateAdmin, upload.single('thumbnail'), editGroupValidationRules, validate, editGroup);
 router.delete('/:id', authenticateAdmin, deleteGroup);
 
 export default router;
