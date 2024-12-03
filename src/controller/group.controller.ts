@@ -29,7 +29,7 @@ export const getGroupById = async (req: Request, res: Response, next: NextFuncti
 
   try {
     const group = await Group.findByPk(id, {
-      attributes: ['title'],
+      attributes: ['title', 'description', 'thumbnailUrl'],
     });
 
     if (!group) {
@@ -44,6 +44,7 @@ export const getGroupById = async (req: Request, res: Response, next: NextFuncti
       },
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
@@ -51,7 +52,7 @@ export const getGroupById = async (req: Request, res: Response, next: NextFuncti
 export const createGroup = async (req: Request, res: Response, next: NextFunction) => {
   const { title, description } = req.body;
   const file = req.file;
-  const folder = 'thumbnail';
+  const folder = 'groups';
 
   try {
     await gcsUpload(folder, file);
@@ -79,29 +80,35 @@ export const editGroup = async (req: Request, res: Response, next: NextFunction)
   const { id } = req.params;
   const { title, description } = req.body;
   const file = req.file;
-  const folder = 'thumbnail';
+  const folder = 'groups';
 
   try {
     const group = await Group.findByPk(id, {
-      attributes: ['id', 'title', 'description', 'thumbnailUrl', 'updatedAt'],
+      attributes: ['id', 'title', 'description', 'thumbnailUrl'],
     });
 
     if (!group) {
       throw new CustomError(`Gagal mendapat group dengan id ${id}!`, 404);
     }
 
-    // Delete previous thumbnail
-    await gcsDeleteFile(group.thumbnailUrl);
-
-    // Upload new thumbnail
-    await gcsUpload(folder, file);
-    const thumbnailUrl = `https://storage.googleapis.com/${bucket.name}/${folder}/${file.filename}`;
-
     await group.update({
       title,
       description,
-      thumbnailUrl,
     });
+
+    // Update thumbnail if provided
+    if (file) {
+      // Delete previous thumbnail
+      await gcsDeleteFile(group.thumbnailUrl);
+
+      // Upload new thumbnail
+      await gcsUpload(folder, file);
+      const thumbnailUrl = `https://storage.googleapis.com/${bucket.name}/${folder}/${file.filename}`;
+
+      await group.update({
+        thumbnailUrl,
+      });
+    }
 
     res.status(200).json({
       status: 'success',
