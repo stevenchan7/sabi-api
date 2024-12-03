@@ -6,11 +6,6 @@ import Option from '../models/option.model';
 import { gcsUpload } from '../helpers/gcs.helper';
 import { bucket } from '../config/gcs.config';
 
-interface Quiz {
-  options: string[];
-  answer: number;
-}
-
 export const getQuestions = async (req: Request, res: Response, next: NextFunction) => {
   try {
     await Question.findAll();
@@ -28,12 +23,12 @@ export const getQuestionById = async (req: Request, res: Response, next: NextFun
     });
 
     if (!question) {
-      throw new CustomError(`Gagal mendapat pertanyaan dengan id ${id}`, 404);
+      throw new CustomError(`Gagal mendapat pertanyaan dengan id ${id}!`, 404);
     }
 
     res.status(200).json({
       status: 'success',
-      message: `Berhasil mendapat pertanyaan dengan id ${id}`,
+      message: `Berhasil mendapat pertanyaan dengan id ${id}.`,
       data: {
         question,
       },
@@ -51,22 +46,23 @@ export const getQuestionsByGroupId = async (req: Request, res: Response, next: N
     const group = await Group.findByPk(id);
 
     if (!group) {
-      throw new CustomError(`Gagal mendapat group dengan id ${id}`, 404);
+      throw new CustomError(`Gagal mendapat group dengan id ${id}!`, 404);
     }
 
     const quizes = await group.getQuestions({
       attributes: ['id', 'question'],
       ...(limit && { limit: Number(limit) }),
+      order: [['createdAt', 'DESC']],
       include: {
         model: Option,
         as: 'options',
-        attributes: ['id', 'option'],
+        attributes: ['id', 'option', 'isAnswer'],
       },
     });
 
     res.status(200).json({
       status: 'success',
-      message: `Berhasil mendapat kuis group dengan id ${id}`,
+      message: `Berhasil mendapat kuis group dengan id ${id}.`,
       data: {
         quizes: quizes,
       },
@@ -85,7 +81,7 @@ export const createQuestion = async (req: Request, res: Response, next: NextFunc
     const group = await Group.findByPk(groupId);
 
     if (!group) {
-      throw new CustomError(`Gagal mendapat group dengan id ${groupId}`, 404);
+      throw new CustomError(`Gagal mendapat group dengan id ${groupId}!`, 404);
     }
 
     // Upload question image to bucket

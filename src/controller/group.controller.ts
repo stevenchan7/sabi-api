@@ -10,6 +10,7 @@ export const getGroups = async (req: Request, res: Response, next: NextFunction)
   try {
     const groups = await Group.findAll({
       attributes: ['id', 'title', 'description', 'thumbnailUrl', 'totalQuestion'],
+      order: [['createdAt', 'DESC']],
     });
 
     res.status(200).json({

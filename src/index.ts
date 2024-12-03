@@ -10,6 +10,7 @@ import authRouter from './routes/auth.route';
 import groupRouter from './routes/group.route';
 import questionRouter from './routes/question.route';
 import quizRouter from './routes/quiz.route';
+import userRouter from './routes/user.route';
 const app = express();
 
 app.use(cookieSession(cookieOptions));
@@ -21,6 +22,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
 app.use('/api/auth/', authRouter);
+app.use('/api/users/', userRouter);
 app.use('/api/groups/', groupRouter);
 app.use('/api/questions/', questionRouter);
 app.use('/api/', quizRouter);
