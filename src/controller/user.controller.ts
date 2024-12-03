@@ -27,6 +27,7 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
 
 export const editUserAvatar = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { id: authUserId } = req.user;
     const { id } = req.params;
     const file = req.file;
     const folder = 'avatar';
@@ -39,6 +40,11 @@ export const editUserAvatar = async (req: Request, res: Response, next: NextFunc
 
     if (!user) {
       throw new CustomError(`Gagal mendapat user dengan id ${id}!`, 404);
+    }
+
+    // Check if authenticated user is authorized to update this resource
+    if (Number(id) !== authUserId) {
+      throw new CustomError('Unauthorized!', 403);
     }
 
     await gcsUpload(folder, file);
