@@ -28,12 +28,25 @@ app.use('/api/questions/', questionRouter);
 app.use('/api/', quizRouter);
 
 // Error handler
-app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
-  res.status(err.status || 500);
-  res.json({
+app.use((err, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof CustomError) {
+    res.status(err.status).json({
+      status: 'fail',
+      message: err.message,
+      data: err.data,
+    });
+  }
+
+  if (err instanceof Error) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+
+  res.status(500).json({
     status: 'fail',
-    message: err.message,
-    data: err.data,
+    message: 'Terjadi kegagalan pada server!',
   });
 });
 

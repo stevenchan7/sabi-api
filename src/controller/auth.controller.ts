@@ -12,13 +12,13 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
   try {
     // Check if user exist
     if (await isUserExist(email)) {
-      throw new CustomError('User dengan email ini sudah ada!', 400);
+      throw new Error('User dengan email ini sudah ada!');
     }
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({
+    await User.create({
       fullname,
       email,
       password: hashedPassword,
