@@ -1,7 +1,7 @@
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes, HasManyGetAssociationsMixin } from 'sequelize';
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes } from 'sequelize';
 import sequelize from '../config/sequelize.config';
 
-class Article extends Model<InferAttributes<Article>, InferCreationAttributes<Article>> {
+class Reading extends Model<InferAttributes<Reading>, InferCreationAttributes<Reading>> {
   declare id: number;
   declare title: string;
   declare content: string;
@@ -11,7 +11,7 @@ class Article extends Model<InferAttributes<Article>, InferCreationAttributes<Ar
   declare deletedAt: CreationOptional<Date>;
 }
 
-Article.init(
+Reading.init(
   {
     id: {
       type: DataTypes.BIGINT.UNSIGNED,
@@ -23,7 +23,7 @@ Article.init(
       allowNull: false,
     },
     content: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     thumbnailUrl: {
@@ -33,7 +33,7 @@ Article.init(
     updatedAt: DataTypes.DATE,
     deletedAt: DataTypes.DATE,
   },
-  { modelName: 'Article', sequelize, underscored: true }
+  { modelName: 'Reading', sequelize, underscored: true }
 );
 
-export default Article;
+export default Reading;

@@ -64,6 +64,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     const token = jwt.sign(
       {
         id: user.id,
+        name: user.fullname,
         role: user.role,
       },
       JWT_SECRET_KEY,
@@ -77,9 +78,6 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       status: 'success',
       message: 'Berhasil login.',
       data: {
-        user: {
-          name: user.fullname,
-        },
         token: token,
       },
     });

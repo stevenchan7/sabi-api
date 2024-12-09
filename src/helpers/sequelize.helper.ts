@@ -1,5 +1,5 @@
 import sequelize from '../config/sequelize.config';
-import '../models/article.model';
+import '../models/reading.model';
 import Group from '../models/group.model';
 import Option from '../models/option.model';
 import Question from '../models/question.model';

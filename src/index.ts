@@ -11,6 +11,7 @@ import groupRouter from './routes/group.route';
 import questionRouter from './routes/question.route';
 import quizRouter from './routes/quiz.route';
 import userRouter from './routes/user.route';
+import readingRouter from './routes/reading.route';
 const app = express();
 
 app.use(cookieSession(cookieOptions));
@@ -25,6 +26,7 @@ app.use('/api/auth/', authRouter);
 app.use('/api/users/', userRouter);
 app.use('/api/groups/', groupRouter);
 app.use('/api/questions/', questionRouter);
+app.use('/api/readings/', readingRouter);
 app.use('/api/', quizRouter);
 
 // Error handler
@@ -35,6 +37,7 @@ app.use((err, req: Request, res: Response, next: NextFunction) => {
       message: err.message,
       data: err.data,
     });
+    return;
   }
 
   if (err instanceof Error) {
@@ -42,6 +45,7 @@ app.use((err, req: Request, res: Response, next: NextFunction) => {
       status: 'fail',
       message: err.message,
     });
+    return;
   }
 
   res.status(500).json({
@@ -53,7 +57,7 @@ app.use((err, req: Request, res: Response, next: NextFunction) => {
 connectSequelize()
   .then(() => syncModel())
   .then(() => {
-    app.listen(PORT, () => {
+    app.listen(Number(PORT), '0.0.0.0', () => {
       return console.log(`Express is listening at port ${PORT}`);
     });
   });

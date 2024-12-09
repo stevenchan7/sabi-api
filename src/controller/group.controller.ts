@@ -100,7 +100,9 @@ export const editGroup = async (req: Request, res: Response, next: NextFunction)
     // Update thumbnail if provided
     if (file) {
       // Delete previous thumbnail
-      await gcsDeleteFile(group.thumbnailUrl);
+      if (group.thumbnailUrl) {
+        await gcsDeleteFile(group.thumbnailUrl);
+      }
 
       // Upload new thumbnail
       await gcsUpload(folder, file);
