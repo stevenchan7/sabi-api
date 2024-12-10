@@ -56,6 +56,10 @@ export const createGroup = async (req: Request, res: Response, next: NextFunctio
   const folder = 'groups';
 
   try {
+    if (!file) {
+      throw new Error('Thumbnail tidak boleh kosong!');
+    }
+
     await gcsUpload(folder, file);
     const thumbnailUrl = `https://storage.googleapis.com/${bucket.name}/${folder}/${file.filename}`;
 
