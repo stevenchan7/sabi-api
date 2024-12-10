@@ -13,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google-cloud/firestore": "^7.11.0",
     "@google-cloud/storage": "^7.14.0",
     "bcrypt": "^5.1.1",
     "cookie-session": "^2.1.0",

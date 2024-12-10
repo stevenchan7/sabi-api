@@ -88,7 +88,7 @@ export const getReadings = async (req: Request, res: Response, next: NextFunctio
 
     res.status(200).json({
       status: 'success',
-      message: 'Berhasil mendapat readings',
+      message: 'Berhasil mendapat readings.',
       data: {
         readings,
       },
@@ -107,12 +107,12 @@ export const getReadingById = async (req: Request, res: Response, next: NextFunc
     });
 
     if (!reading) {
-      throw new CustomError(`Gagal mendapat reading dengan id ${id}`, 404);
+      throw new CustomError(`Gagal mendapat reading dengan id ${id}!`, 404);
     }
 
     res.status(200).json({
       status: 'success',
-      message: `Berhasil mendapat reading dengan id ${id}`,
+      message: `Berhasil mendapat reading dengan id ${id}.`,
       data: {
         reading,
       },
@@ -129,14 +129,14 @@ export const deleteReading = async (req: Request, res: Response, next: NextFunct
     const reading = await Reading.findByPk(id);
 
     if (!reading) {
-      throw new CustomError(`Gagal mendapat reading dengan id ${id}`, 404);
+      throw new CustomError(`Gagal mendapat reading dengan id ${id}!`, 404);
     }
 
     await reading.destroy();
 
     res.status(200).json({
       status: 'success',
-      message: `Berhasil menghapus reading dengan id ${id}`,
+      message: `Berhasil menghapus reading dengan id ${id}.`,
     });
   } catch (error) {
     next(error);

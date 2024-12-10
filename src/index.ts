@@ -12,6 +12,7 @@ import questionRouter from './routes/question.route';
 import quizRouter from './routes/quiz.route';
 import userRouter from './routes/user.route';
 import readingRouter from './routes/reading.route';
+import predictionRouter from './routes/prediction.route';
 const app = express();
 
 app.use(cookieSession(cookieOptions));
@@ -28,6 +29,7 @@ app.use('/api/groups/', groupRouter);
 app.use('/api/questions/', questionRouter);
 app.use('/api/readings/', readingRouter);
 app.use('/api/', quizRouter);
+app.use('/api/predictions', predictionRouter);
 
 // Error handler
 app.use((err, req: Request, res: Response, next: NextFunction) => {
