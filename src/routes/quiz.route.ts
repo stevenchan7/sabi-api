@@ -9,6 +9,6 @@ router.get('/user-answer-groups/:id', authenticateStudent, getUserAnswerGroupByI
 // Create user answer group
 router.post('/user-answer-groups', authenticateStudent, createUserAnswerGroup);
 // Quiz submission
-router.patch('/user-answer-groups/:id', authenticateStudent, submitQuiz);
+router.patch('/user-answer-groups', authenticateStudent, submitQuiz);
 
 export default router;
