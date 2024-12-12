@@ -9,7 +9,7 @@ import UserAnswerGroup from '../models/userAnswerGroup.model';
 
 const associate = () => {
   Group.hasMany(Question, { foreignKey: 'group_id' });
-  Question.belongsTo(Group, { foreignKey: 'group_id' });
+  Question.belongsTo(Group, { foreignKey: 'group_id', as: 'group' });
 
   Question.hasMany(Option, { foreignKey: 'question_id', onDelete: 'CASCADE', as: 'options' });
   Option.belongsTo(Question, { foreignKey: 'question_id', onDelete: 'CASCADE', as: 'question' });

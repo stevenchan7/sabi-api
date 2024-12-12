@@ -11,6 +11,7 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date>;
   declare options: NonAttribute<Option[]>;
+  declare group: NonAttribute<Group>;
   declare createOption: HasManyCreateAssociationMixin<Option, 'questionId'>;
   declare getOptions: HasManyGetAssociationsMixin<Option>;
 }

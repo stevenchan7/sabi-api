@@ -10,7 +10,7 @@ const router = Router();
 router.get('/', getQuestions);
 router.get('/:id', getQuestionById);
 router.post('/', authenticateAdmin, upload.single('question'), createQuestionValidationRules, validate, createQuestion);
-router.put('/:id', authenticateAdmin, editQuestionValidationRules, validate, editQuestion);
+router.put('/:id', authenticateAdmin, upload.single('question'), editQuestionValidationRules, validate, editQuestion);
 router.delete('/:id', authenticateAdmin, deleteQuestion);
 
 export default router;

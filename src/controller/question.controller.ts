@@ -3,7 +3,7 @@ import Group from '../models/group.model';
 import CustomError from '../helpers/error.helper';
 import Question from '../models/question.model';
 import Option from '../models/option.model';
-import { gcsUpload } from '../helpers/gcs.helper';
+import { gcsDeleteFile, gcsUpload } from '../helpers/gcs.helper';
 import { bucket } from '../config/gcs.config';
 
 export const getQuestions = async (req: Request, res: Response, next: NextFunction) => {
@@ -128,25 +128,52 @@ export const createQuestion = async (req: Request, res: Response, next: NextFunc
 
 export const editQuestion = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
-  const { question } = req.body;
+  const { options, answer }: { options: string[]; answer: string } = req.body;
+  const file = req.file;
+  const folder = 'quiz-questions';
 
   try {
-    const existingQuestion = await Question.findByPk(id);
+    const existingQuestion = await Question.findByPk(id, {
+      include: {
+        model: Option,
+        as: 'options',
+      },
+    });
 
     if (!existingQuestion) {
       throw new CustomError(`Gagal mendapat pertanyaan dengan id ${id}!`, 404);
     }
 
-    await existingQuestion.update({
-      question,
+    // Update question if provided
+    if (file) {
+      // Delete previous question in bucket
+      if (existingQuestion.question) {
+        await gcsDeleteFile(existingQuestion.question);
+      }
+
+      // Upload new question
+      await gcsUpload(folder, file);
+      const question = `https://storage.googleapis.com/${bucket.name}/${folder}/${file.filename}`;
+
+      await existingQuestion.update({
+        question,
+      });
+    }
+
+    options.forEach(async (option, index) => {
+      if (!existingQuestion.options[index]) {
+        throw new CustomError(`Opsi tidak lengkap!`, 404);
+      }
+
+      await existingQuestion.options[index].update({
+        option,
+        isAnswer: Number(answer) === index,
+      });
     });
 
     res.status(200).json({
       status: 'success',
       message: `Berhasil memperbarui question dengan id ${id}.`,
-      data: {
-        question: existingQuestion,
-      },
     });
   } catch (error) {
     next(error);
@@ -157,13 +184,19 @@ export const deleteQuestion = async (req: Request, res: Response, next: NextFunc
   const { id } = req.params;
 
   try {
-    const question = await Question.findByPk(id);
+    const question = await Question.findByPk(id, {
+      include: {
+        model: Group,
+        as: 'group',
+      },
+    });
 
     if (!question) {
       throw new CustomError(`Gagal mendapat pertanyaan dengan id ${id}!`, 404);
     }
 
     await question.destroy();
+    await question.group.decrement({ totalQuestion: 1 });
 
     res.status(201).json({
       status: 'success',
