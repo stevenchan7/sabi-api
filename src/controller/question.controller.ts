@@ -20,6 +20,11 @@ export const getQuestionById = async (req: Request, res: Response, next: NextFun
   try {
     const question = await Question.findByPk(id, {
       attributes: ['id', 'question'],
+      include: {
+        model: Option,
+        as: 'options',
+        attributes: ['id', 'option', 'isAnswer'],
+      },
     });
 
     if (!question) {
