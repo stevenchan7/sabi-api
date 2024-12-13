@@ -3,10 +3,14 @@ import { storeData } from '../helpers/firestore.helper';
 import { gcsUpload } from '../helpers/gcs.helper';
 import { bucket } from '../config/gcs.config';
 import { Firestore } from '@google-cloud/firestore';
+import { GCP_PROJECT_ID, GCS_KEY_FILENAME } from '../helpers/constant.helper';
 
 export const getPredictions = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const db = new Firestore();
+    const db = new Firestore({
+      projectId: GCP_PROJECT_ID,
+      keyFilename: GCS_KEY_FILENAME,
+    });
 
     const snapshot = await db.collection('predictions').get();
 
